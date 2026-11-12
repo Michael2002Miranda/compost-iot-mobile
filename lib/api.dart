@@ -79,6 +79,11 @@ class ApiCliente {
       throw ApiException('No se pudo conectar con el servidor. Revise su conexión a Internet.');
     } on FormatException {
       throw ApiException('El servidor devolvió una respuesta inesperada.');
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      // Errores de socket u otros: se muestran como falta de conexión.
+      throw ApiException('No se pudo conectar con el servidor. Revise su conexión a Internet.');
     }
   }
 

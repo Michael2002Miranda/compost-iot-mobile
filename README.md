@@ -81,20 +81,20 @@ de release.
 `usesCleartextTraffic="true"` está habilitado para poder apuntar a un servidor local
 por HTTP durante las pruebas de campo.
 
-### Requisito del SDK de Android
+### Nota sobre dependencias nativas
 
-Flutter 3.47 y el plugin `shared_preferences` compilan un pequeño módulo nativo, por lo
-que el SDK necesita el **NDK 28.2.13676358** y **CMake 3.22.1**. Android Studio los
-instala solo; si la compilación falla con *«Android sdkmanager did not install NDK»*:
+`shared_preferences` está fijado con `dependency_overrides` a
+`shared_preferences_android: 2.4.0` porque la versión 2.5.x incorpora el paquete
+`jni`, que compila código nativo con CMake y hace fallar la compilación en equipos
+sin NDK. Con esta versión **no se necesita NDK** para generar el APK.
+
+Si en el futuro se actualiza ese plugin, hará falta instalar el NDK:
 
 ```powershell
 $sdk = "$env:LOCALAPPDATA\Android\sdk"
 & "$sdk\cmdline-tools\latest\bin\sdkmanager.bat" --sdk_root="$sdk" --install "ndk;28.2.13676358" "cmake;3.22.1"
 ```
 
-Si `sdkmanager` no encuentra el paquete, descargar `android-ndk-r28c-windows.zip` de
-<https://developer.android.com/ndk/downloads> y descomprimirlo en
-`%LOCALAPPDATA%\Android\sdk\ndk\28.2.13676358`.
 
 
 ---
