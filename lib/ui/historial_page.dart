@@ -19,7 +19,8 @@ class HistorialPage extends StatefulWidget {
 
 class _HistorialPageState extends State<HistorialPage> {
   String _parametro = 'temperatura';
-  int _dias = 1;
+  // Por defecto se muestran 30 días: así el histórico se ve completo al abrir.
+  int _dias = 30;
   bool _cargando = false;
 
   @override

@@ -50,6 +50,7 @@ class Compostera {
     this.codigo,
     this.lecturas = 0,
     this.ultimaLectura,
+    this.primeraLectura,
     this.creadaEn,
   });
 
@@ -64,6 +65,9 @@ class Compostera {
   final String? codigo;
   final int lecturas;
   final DateTime? ultimaLectura;
+
+  /// Fecha de la primera lectura: define el día de proceso que muestra el panel.
+  final DateTime? primeraLectura;
   final DateTime? creadaEn;
 
   bool get esExperimental => grupo == 'GE';
@@ -76,6 +80,7 @@ class Compostera {
         codigo: json['codigo']?.toString(),
         lecturas: (json['lecturas'] as num?)?.toInt() ?? 0,
         ultimaLectura: _fechaOpcional(json['ultima_lectura'] ?? json['ultima']),
+        primeraLectura: _fechaOpcional(json['primera_lectura']),
         creadaEn: _fechaOpcional(json['creada_en']),
       );
 
@@ -87,6 +92,7 @@ class Compostera {
         'codigo': codigo,
         'lecturas': lecturas,
         'ultima_lectura': ultimaLectura?.toIso8601String(),
+        'primera_lectura': primeraLectura?.toIso8601String(),
         'creada_en': creadaEn?.toIso8601String(),
       };
 }

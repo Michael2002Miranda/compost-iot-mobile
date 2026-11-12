@@ -43,9 +43,10 @@ class AppState extends ChangeNotifier {
 
   bool get haySesion => usuario != null;
   int get diasDeProceso {
-    final creada = activa?.creadaEn;
-    if (creada == null) return 1;
-    final dias = DateTime.now().difference(creada).inDays + 1;
+    // Se cuenta desde la primera lectura; si aún no hay datos, desde el alta.
+    final inicio = activa?.primeraLectura ?? activa?.creadaEn;
+    if (inicio == null) return 1;
+    final dias = DateTime.now().difference(inicio).inDays + 1;
     return dias < 1 ? 1 : dias;
   }
 
