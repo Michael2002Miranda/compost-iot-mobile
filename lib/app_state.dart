@@ -80,6 +80,8 @@ class AppState extends ChangeNotifier {
       usuario = Usuario.fromJson(guardado);
       _cargarDesdeCache();
       inicializando = false;
+      // Al reabrir la app con la sesión guardada también debe refrescarse sola.
+      _iniciarPolling();
       _avisar();
 
       // Se valida la sesión en segundo plano; si no hay red se conserva la copia.
