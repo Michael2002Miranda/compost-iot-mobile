@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Necesario para consultar la API del backend (sin este permiso la app
+         funciona en depuración pero no en la compilación de release). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
-        android:label="compost_iot_mobile"
+        android:label="Compost IoT"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

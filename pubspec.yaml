@@ -1,5 +1,5 @@
 name: compost_iot_mobile
-description: "A new Flutter project."
+description: "Aplicación móvil con IoT para monitorear el proceso de compostaje en El Porvenir (UPAO 2026)."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   http: ^1.6.0
+  shared_preferences: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -88,3 +89,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+

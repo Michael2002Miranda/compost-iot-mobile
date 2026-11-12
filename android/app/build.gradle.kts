@@ -7,7 +7,9 @@ plugins {
 android {
     namespace = "com.example.compost_iot_mobile"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // La app no tiene código nativo: no se exige una versión concreta de NDK.
+    // (Si en el futuro se integra un plugin con C/C++, restaurar:
+    //  ndkVersion = flutter.ndkVersion)
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
