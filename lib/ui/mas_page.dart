@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../config.dart';
+import '../notificaciones.dart';
 import 'compostera_page.dart';
 import 'equipo_page.dart';
 import 'investigador_page.dart';
@@ -182,6 +183,19 @@ class MasPage extends StatelessWidget {
                 titulo: 'Servidor de la API',
                 subtitulo: estado.api.baseUrl,
                 onTap: () => _editarServidor(context),
+              ),
+              _opcion(
+                context,
+                icono: Icons.notifications_active_outlined,
+                titulo: 'Notificaciones',
+                subtitulo: estado.notificacionesEstado,
+                onTap: () async {
+                  await Notificaciones.configurar(estado);
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Notificaciones: ${estado.notificacionesEstado}')),
+                  );
+                },
               ),
               _opcion(
                 context,

@@ -2,7 +2,7 @@ name: compost_iot_mobile
 description: "Aplicación móvil con IoT para monitorear el proceso de compostaje en El Porvenir (UPAO 2026)."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 2.2.0+3
 
 environment:
   sdk: ^3.13.7

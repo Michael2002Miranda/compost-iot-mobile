@@ -14,5 +14,5 @@ class AppConfig {
   static const Duration intervaloPolling = Duration(seconds: 5);
 
   static const String nombreApp = 'Compost IoT';
-  static const String version = '2.0.0';
+  static const String version = '2.2.0';
 }

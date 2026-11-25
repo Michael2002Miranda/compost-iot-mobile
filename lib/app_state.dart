@@ -208,14 +208,22 @@ class AppState extends ChangeNotifier {
   }
 
   /// Envía al backend el identificador del teléfono para las notificaciones.
-  Future<void> registrarTokenPush(String token) async {
-    if (token.isEmpty) return;
+  /// Devuelve `true` si el servidor lo aceptó.
+  Future<bool> registrarTokenPush(String token) async {
+    if (token.isEmpty) return false;
     try {
       await api.registrarTokenPush(token);
+      return true;
     } on ApiException {
       // Sin conexión: se reintenta la próxima vez que abra la aplicación.
+      return false;
     }
   }
+
+  /// Estado legible del registro de notificaciones (se muestra en Más).
+  String notificacionesEstado = 'Sin configurar';
+
+  void avisarCambio() => _avisar();
 
   // ---------------------------------------------------------------------------
   // Carga de datos

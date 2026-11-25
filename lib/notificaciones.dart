@@ -25,7 +25,7 @@ class Notificaciones {
 
   static Future<void> configurar(AppState estado) async {
     if (kIsWeb) {
-      // En web las notificaciones requieren un service worker adicional.
+      estado.notificacionesEstado = 'No disponible en la versión web';
       return;
     }
     if (_configurado) return;
@@ -33,19 +33,30 @@ class Notificaciones {
     try {
       final mensajeria = FirebaseMessaging.instance;
 
-      await mensajeria.requestPermission(alert: true, badge: true, sound: true);
-
-      final token = await mensajeria.getToken();
-      if (token != null && token.isNotEmpty) {
-        await estado.registrarTokenPush(token);
+      final permiso = await mensajeria.requestPermission(alert: true, badge: true, sound: true);
+      if (permiso.authorizationStatus == AuthorizationStatus.denied) {
+        estado.notificacionesEstado = 'Permiso denegado en el teléfono';
+        estado.avisarCambio();
+        return;
       }
 
-      // El token puede renovarse; se vuelve a enviar cuando ocurra.
-      mensajeria.onTokenRefresh.listen(estado.registrarTokenPush);
+      final token = await mensajeria.getToken();
+      if (token == null || token.isEmpty) {
+        estado.notificacionesEstado = 'El teléfono no entregó un token';
+        estado.avisarCambio();
+        return;
+      }
 
-      _configurado = true;
+      final guardado = await estado.registrarTokenPush(token);
+      estado.notificacionesEstado = guardado ? 'Activas' : 'Token no enviado al servidor';
+      estado.avisarCambio();
+
+      mensajeria.onTokenRefresh.listen(estado.registrarTokenPush);
+      _configurado = guardado;
     } catch (error) {
       debugPrint('[notificaciones] no se pudieron configurar: $error');
+      estado.notificacionesEstado = 'Error: ${error.toString().split('\n').first}';
+      estado.avisarCambio();
     }
   }
 }
