@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 
 import 'almacen.dart';
 import 'app_state.dart';
+import 'notificaciones.dart';
 import 'ui/home_shell.dart';
 import 'ui/login_page.dart';
 import 'ui/tema.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const CompostApp());
+  final firebaseListo = await iniciarFirebase();
+  runApp(CompostApp(firebaseListo: firebaseListo));
 }
 
 class CompostApp extends StatefulWidget {
-  const CompostApp({super.key});
+  const CompostApp({super.key, this.firebaseListo = false});
+
+  final bool firebaseListo;
 
   @override
   State<CompostApp> createState() => _CompostAppState();
@@ -25,6 +29,13 @@ class _CompostAppState extends State<CompostApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     _estado = AppState(AlmacenLocal());
+
+    // Al entrar (o al recuperar la sesión) se registra el teléfono para las
+    // notificaciones push.
+    if (widget.firebaseListo) {
+      _estado.alIniciarSesion = () => Notificaciones.configurar(_estado);
+    }
+
     WidgetsBinding.instance.addObserver(this);
     _estado.iniciar();
   }

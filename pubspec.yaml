@@ -13,6 +13,9 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   http: ^1.6.0
+  # Notificaciones push (Firebase Cloud Messaging).
+  firebase_core: ^3.6.0
+  firebase_messaging: ^15.1.0
   # Se fija la implementación de Android en 2.4.0: la 2.5.x incorpora `jni`
   # (código nativo con CMake), que exige NDK y hace fallar la compilación en
   # equipos sin ese componente. Esta versión cubre lo que usa la aplicación.

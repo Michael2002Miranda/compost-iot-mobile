@@ -284,6 +284,11 @@ class ApiCliente {
 
   Future<Map<String, dynamic>> resumen() => _enviar('GET', '/api/resumen');
 
+  /// Guarda en la cuenta el token del teléfono para las notificaciones.
+  Future<void> registrarTokenPush(String token) async {
+    await _enviar('POST', '/api/notificaciones/token', cuerpo: {'token': token});
+  }
+
   // --- Usabilidad y funcionalidad ----------------------------------------
   Future<double> enviarSus(List<int> respuestas, {String? evaluador}) async {
     final cuerpo = await _enviar('POST', '/api/evaluaciones/sus', cuerpo: {

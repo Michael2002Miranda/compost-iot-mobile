@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "64666929611",
+    "project_id": "compost-iot-e59ac",
+    "storage_bucket": "compost-iot-e59ac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64666929611:android:b7de29d2cfe582f01cce4e",
+        "android_client_info": {
+          "package_name": "com.example.compost_iot_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVpybHLCvSYa_vxAeCEn7KikFQMS3iov4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

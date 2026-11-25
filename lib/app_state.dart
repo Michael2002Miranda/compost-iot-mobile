@@ -67,6 +67,10 @@ class AppState extends ChangeNotifier {
   bool _actualizando = false;
   bool _vivo = true;
 
+  /// Se dispara cuando hay sesión (login o sesión recuperada): lo usa `main`
+  /// para registrar el teléfono en las notificaciones.
+  Future<void> Function()? alIniciarSesion;
+
   @override
   void dispose() {
     _vivo = false;
@@ -102,6 +106,7 @@ class AppState extends ChangeNotifier {
         usuario = await api.perfil();
         await almacen.guardarUsuario(usuario!.toJson());
         await cargarDatos(silencioso: true);
+        alIniciarSesion?.call();
       } on ApiException catch (error) {
         if (error.codigo == 401) {
           await salir();
@@ -159,6 +164,7 @@ class AppState extends ChangeNotifier {
       await almacen.guardarUsuario(resultado.usuario.toJson());
       await cargarDatos();
       _iniciarPolling();
+      alIniciarSesion?.call();
       _avisar();
       return null;
     } on ApiException catch (error) {
@@ -199,6 +205,16 @@ class AppState extends ChangeNotifier {
     sinConexion = false;
     await almacen.limpiarSesion();
     _avisar();
+  }
+
+  /// Envía al backend el identificador del teléfono para las notificaciones.
+  Future<void> registrarTokenPush(String token) async {
+    if (token.isEmpty) return;
+    try {
+      await api.registrarTokenPush(token);
+    } on ApiException {
+      // Sin conexión: se reintenta la próxima vez que abra la aplicación.
+    }
   }
 
   // ---------------------------------------------------------------------------
