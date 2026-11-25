@@ -300,5 +300,39 @@ class ApiCliente {
       if (observacion != null) 'observacion': observacion,
     });
   }
+
+  // --- Panel del investigador --------------------------------------------
+  Future<List<ComposteraEstudio>> composterasEstudio() async {
+    final cuerpo = await _enviar('GET', '/api/admin/composteras');
+    final lista = (cuerpo['data'] as List?) ?? const [];
+    return lista.map((e) => ComposteraEstudio.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<void> cambiarGrupo(int id, String grupo) async {
+    await _enviar('PATCH', '/api/admin/composteras/$id', cuerpo: {'grupo': grupo});
+  }
+
+  Future<Map<String, dynamic>> resumenEstudio() => _enviar('GET', '/api/admin/resumen');
+
+  /// Descarga el estudio completo en CSV (la respuesta no es JSON).
+  Future<String> descargarEstudioCsv() async {
+    try {
+      final respuesta = await http
+          .get(_uri('/api/admin/export.csv'), headers: _cabeceras)
+          .timeout(const Duration(seconds: 60));
+
+      if (respuesta.statusCode != 200) {
+        throw ApiException(
+          'No se pudo descargar el CSV (${respuesta.statusCode})',
+          codigo: respuesta.statusCode,
+        );
+      }
+      return utf8.decode(respuesta.bodyBytes);
+    } on TimeoutException {
+      throw ApiException('La descarga tardó demasiado. Intente de nuevo.');
+    } on http.ClientException {
+      throw ApiException('No se pudo conectar con el servidor.');
+    }
+  }
 }
 

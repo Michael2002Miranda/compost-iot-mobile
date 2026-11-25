@@ -8,6 +8,7 @@ import 'package:compost_iot_mobile/clasificacion.dart';
 import 'package:compost_iot_mobile/modelos.dart';
 import 'package:compost_iot_mobile/ui/cfc_page.dart';
 import 'package:compost_iot_mobile/ui/dashboard_page.dart';
+import 'package:compost_iot_mobile/ui/equipo_page.dart';
 import 'package:compost_iot_mobile/ui/tema.dart';
 
 /// Estado de ejemplo: usuario con una compostera y una lectura en fase termófila.
@@ -118,5 +119,20 @@ void main() {
 
     expect(find.text('Cumple los criterios de madurez'), findsOneWidget);
     expect(find.text('Puntaje 8 / 8 · se considera maduro con 7 u 8 puntos'), findsOneWidget);
+  });
+
+  testWidgets('La pantalla del equipo muestra el código y los pasos de configuración', (tester) async {
+    pantallaDeTelefono(tester);
+    final estado = await estadoDeEjemplo();
+    final compostera = estado.activa!;
+
+    await tester.pumpWidget(envolver(EquipoPage(estado: estado, compostera: compostera)));
+    await tester.pumpAndSettle();
+
+    expect(find.text('CMP-1234'), findsOneWidget);
+    expect(find.text('Pasos para conectarlo'), findsOneWidget);
+    expect(find.textContaining('CompostIoT-Setup'), findsWidgets);
+    expect(find.text('Copiar código'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

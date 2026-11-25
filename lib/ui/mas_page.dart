@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../app_state.dart';
 import '../config.dart';
 import 'compostera_page.dart';
+import 'equipo_page.dart';
+import 'investigador_page.dart';
 import 'sus_page.dart';
 import 'tema.dart';
 import 'widgets.dart';
@@ -65,6 +67,20 @@ class MasPage extends StatelessWidget {
                             usuario?.email ?? '',
                             style: const TextStyle(color: Colors.white70, fontSize: 12),
                           ),
+                          if (usuario?.esInvestigador ?? false) ...[
+                            const SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Text(
+                                'Investigador del estudio',
+                                style: TextStyle(color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -106,6 +122,38 @@ class MasPage extends StatelessWidget {
                   ),
                 ),
               ),
+              if (estado.activa != null)
+                Card(
+                  margin: const EdgeInsets.only(top: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  child: ListTile(
+                    leading: const Icon(Icons.sensors, color: Tema.verde),
+                    title: const Text('Configurar mi equipo', style: TextStyle(fontSize: 14)),
+                    subtitle: Text(
+                      'Conectar el prototipo al WiFi de la casa',
+                      style: const TextStyle(fontSize: 11.5),
+                    ),
+                    trailing: const Icon(Icons.chevron_right, size: 18),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => EquipoPage(estado: estado, compostera: estado.activa!),
+                      ),
+                    ),
+                  ),
+                ),
+              if (estado.esInvestigador) ...[
+                const SizedBox(height: 18),
+                const SeccionTitulo(texto: 'Estudio'),
+                _opcion(
+                  context,
+                  icono: Icons.groups_outlined,
+                  titulo: 'Panel del investigador',
+                  subtitulo: 'Las composteras de todos los participantes',
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => InvestigadorPage(estado: estado)),
+                  ),
+                ),
+              ],
               const SizedBox(height: 18),
               const SeccionTitulo(texto: 'Evaluación del sistema'),
               _opcion(
@@ -139,7 +187,7 @@ class MasPage extends StatelessWidget {
                 context,
                 icono: Icons.info_outline,
                 titulo: 'Acerca de',
-                subtitulo: 'Versión ${AppConfig.version} · UPAO 2026',
+                subtitulo: 'Versión ${AppConfig.version}',
                 onTap: () => _acercaDe(context),
               ),
               const SizedBox(height: 18),
@@ -243,20 +291,22 @@ class MasPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             Text(
-              'Aplicación móvil con IoT para monitorear el proceso de compostaje en El Porvenir, 2026.',
-              style: TextStyle(fontSize: 12.5, height: 1.4),
+              'Compost IoT monitorea la temperatura, la humedad y el pH de tu compostera '
+              'y te avisa cuando algún valor sale del rango recomendado.',
+              style: TextStyle(fontSize: 12.5, height: 1.45),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 12),
             Text(
-              'Cardenas Iglesias, Hugo Augusto\nVelasquez Miranda, Michael Jhordan',
-              style: TextStyle(fontSize: 11.5, color: Tema.textoSecundario),
+              'Qué datos se guardan',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 3),
             Text(
-              'Universidad Privada Antenor Orrego\nEscuela de Ingeniería de Computación y Sistemas',
-              style: TextStyle(fontSize: 11.5, color: Tema.textoSecundario),
+              'Las mediciones del sensor, las alertas y las fichas que registres quedan '
+              'asociadas a tu cuenta y se usan únicamente para el seguimiento de tu compostera.',
+              style: TextStyle(fontSize: 11.5, height: 1.4, color: Tema.textoSecundario),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 12),
             Text('Versión ${AppConfig.version}', style: TextStyle(fontSize: 11)),
           ],
         ),

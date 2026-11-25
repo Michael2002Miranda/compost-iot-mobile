@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../modelos.dart';
+import 'equipo_page.dart';
 import 'tema.dart';
 
 /// Alta de una compostera. El código generado es el que se configura en el ESP32.
@@ -47,12 +48,21 @@ class _ComposteraPageState extends State<ComposteraPage> {
       return;
     }
 
-    await _mostrarCodigo(creada);
+    final verInstrucciones = await _mostrarCodigo(creada);
+    if (!mounted) return;
+
+    if (verInstrucciones) {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => EquipoPage(estado: widget.estado, compostera: creada),
+        ),
+      );
+    }
     if (mounted) Navigator.of(context).pop();
   }
 
-  Future<void> _mostrarCodigo(Compostera compostera) {
-    return showDialog<void>(
+  Future<bool> _mostrarCodigo(Compostera compostera) async {
+    final resultado = await showDialog<bool>(
       context: context,
       builder: (contexto) => AlertDialog(
         icon: const Icon(Icons.sensors, color: Tema.verde, size: 34),
@@ -86,9 +96,9 @@ class _ComposteraPageState extends State<ComposteraPage> {
               ),
             ),
             const SizedBox(height: 12),
-            Text(
-              'En el firmware:  #define CODIGO_DISPOSITIVO "${compostera.codigo ?? ''}"',
-              style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
+            const Text(
+              'Ese código se escribe una sola vez en el equipo, desde el celular.',
+              style: TextStyle(fontSize: 11, color: Tema.textoSecundario),
             ),
             const SizedBox(height: 6),
             Text(
@@ -98,13 +108,19 @@ class _ComposteraPageState extends State<ComposteraPage> {
           ],
         ),
         actions: [
+          TextButton(
+            onPressed: () => Navigator.of(contexto).pop(false),
+            child: const Text('Cerrar'),
+          ),
           FilledButton(
-            onPressed: () => Navigator.of(contexto).pop(),
-            child: const Text('Entendido'),
+            onPressed: () => Navigator.of(contexto).pop(true),
+            child: const Text('Ver instrucciones'),
           ),
         ],
       ),
     );
+
+    return resultado ?? false;
   }
 
   @override

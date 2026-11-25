@@ -42,6 +42,13 @@ class AppState extends ChangeNotifier {
   int alertasPendientes() => alertas.where((a) => !a.atendida).length;
 
   bool get haySesion => usuario != null;
+
+  /// El rol llega desde el backend: solo el tesista ve el panel del estudio.
+  bool get esInvestigador => usuario?.esInvestigador ?? false;
+
+  List<ComposteraEstudio> estudio = [];
+  Map<String, dynamic>? resumenEstudio;
+  bool cargandoEstudio = false;
   int get diasDeProceso {
     // Se cuenta desde la primera lectura; si aún no hay datos, desde el alta.
     final inicio = activa?.primeraLectura ?? activa?.creadaEn;
@@ -434,8 +441,39 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  Future<void> cargarComparacion() async {
+  // ---------------------------------------------------------------------------
+  // Panel del investigador
+  // ---------------------------------------------------------------------------
+  Future<void> cargarEstudio() async {
+    if (!esInvestigador) return;
+    cargandoEstudio = true;
+    _avisar();
+
     try {
+      estudio = await api.composterasEstudio();
+      resumenEstudio = await api.resumenEstudio();
+    } on ApiException catch (error) {
+      errorSesion = error.mensaje;
+    } finally {
+      cargandoEstudio = false;
+      _avisar();
+    }
+  }
+
+  Future<String?> cambiarGrupoEstudio(int id, String grupo) async {
+    try {
+      await api.cambiarGrupo(id, grupo);
+      await cargarEstudio();
+      return null;
+    } on ApiException catch (error) {
+      return error.mensaje;
+    }
+  }
+
+  /// Devuelve el CSV completo del estudio o lanza `ApiException`.
+  Future<String> descargarCsvEstudio() => api.descargarEstudioCsv();
+
+  Future<void> cargarComparacion() async {    try {
       final resultado = await api.comparacion();
       grupoControl = resultado.gc;
       grupoExperimental = resultado.ge;

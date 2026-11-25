@@ -26,19 +26,35 @@ DateTime? _fechaOpcional(dynamic valor) {
 }
 
 class Usuario {
-  const Usuario({required this.id, required this.nombre, required this.email});
+  const Usuario({
+    required this.id,
+    required this.nombre,
+    required this.email,
+    this.rol = 'usuario',
+  });
 
   final int id;
   final String nombre;
   final String email;
 
+  /// `usuario` (participante) o `investigador` (tesista).
+  final String rol;
+
+  bool get esInvestigador => rol == 'investigador';
+
   factory Usuario.fromJson(Map<String, dynamic> json) => Usuario(
         id: (json['id'] as num?)?.toInt() ?? 0,
         nombre: '${json['nombre'] ?? ''}',
         email: '${json['email'] ?? ''}',
+        rol: '${json['rol'] ?? 'usuario'}',
       );
 
-  Map<String, dynamic> toJson() => {'id': id, 'nombre': nombre, 'email': email};
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'nombre': nombre,
+        'email': email,
+        'rol': rol,
+      };
 }
 
 class Compostera {
@@ -323,4 +339,49 @@ class ResumenGrupo {
       maduros: (cfc?['maduros'] as num?)?.toInt() ?? 0,
     );
   }
+}
+
+/// Compostera tal como la ve el investigador: incluye a su participante.
+class ComposteraEstudio {
+  const ComposteraEstudio({
+    required this.id,
+    required this.nombre,
+    required this.grupo,
+    this.codigo,
+    this.dispositivoId,
+    this.ubicacion,
+    this.participante,
+    this.email,
+    this.lecturas = 0,
+    this.ultimaLectura,
+    this.primeraLectura,
+  });
+
+  final int id;
+  final String nombre;
+  final String grupo;
+  final String? codigo;
+  final String? dispositivoId;
+  final String? ubicacion;
+  final String? participante;
+  final String? email;
+  final int lecturas;
+  final DateTime? ultimaLectura;
+  final DateTime? primeraLectura;
+
+  bool get tieneEquipo => (dispositivoId ?? '').isNotEmpty;
+
+  factory ComposteraEstudio.fromJson(Map<String, dynamic> json) => ComposteraEstudio(
+        id: (json['id'] as num?)?.toInt() ?? 0,
+        nombre: '${json['nombre'] ?? 'Compostera'}',
+        grupo: '${json['grupo'] ?? 'GE'}'.toUpperCase(),
+        codigo: json['codigo']?.toString(),
+        dispositivoId: json['dispositivo_id']?.toString(),
+        ubicacion: json['ubicacion']?.toString(),
+        participante: json['participante']?.toString(),
+        email: json['email']?.toString(),
+        lecturas: (json['lecturas'] as num?)?.toInt() ?? 0,
+        ultimaLectura: _fechaOpcional(json['ultima_lectura']),
+        primeraLectura: _fechaOpcional(json['primera_lectura']),
+      );
 }
