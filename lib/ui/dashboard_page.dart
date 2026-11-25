@@ -139,16 +139,18 @@ class DashboardPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Estado del Compostador',
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                      'ESTADO DEL COMPOSTADOR',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 9.5,
+                        letterSpacing: 1.3,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Karla',
+                      ),
                     ),
                     Text(
                       compostera.nombre,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: Tema.serif(21, color: Colors.white),
                     ),
                   ],
                 ),
@@ -197,11 +199,25 @@ class DashboardPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(titulo, style: const TextStyle(color: Colors.white60, fontSize: 10.5)),
-        const SizedBox(height: 2),
+        Text(
+          titulo.toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white54,
+            fontSize: 8.5,
+            letterSpacing: 1.1,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Karla',
+          ),
+        ),
+        const SizedBox(height: 3),
         Text(
           valor,
-          style: const TextStyle(color: Colors.white, fontSize: 13.5, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Karla',
+          ),
         ),
       ],
     );
@@ -217,27 +233,23 @@ class DashboardPage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF3E0),
+            color: const Color(0xFFFBF3E2),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFFFCC80)),
+            border: Border.all(color: Tema.ocre.withValues(alpha: 0.45)),
           ),
           child: Row(
             children: [
-              const Icon(Icons.warning_amber_rounded, color: Color(0xFFEF6C00)),
+              const Icon(Icons.warning_amber_rounded, color: Tema.ocre, size: 20),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   pendientes == 1
                       ? '1 alerta activa en tu compostera'
                       : '$pendientes alertas activas en tu compostera',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF8A4B00),
-                  ),
+                  style: Tema.sans(12.5, color: const Color(0xFF7A5416), peso: FontWeight.w600),
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Color(0xFF8A4B00)),
+              const Icon(Icons.chevron_right, color: Color(0xFF7A5416)),
             ],
           ),
         ),
@@ -374,18 +386,18 @@ class _AvisoPhSimulado extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFE3F2FD),
+        color: const Color(0xFFEDF0F2),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF90CAF9)),
+        border: Border.all(color: const Color(0xFFC9D3D8)),
       ),
       child: const Row(
         children: [
-          Icon(Icons.info_outline, size: 17, color: Color(0xFF1565C0)),
+          Icon(Icons.info_outline, size: 16, color: Color(0xFF4A6B7C)),
           SizedBox(width: 8),
           Expanded(
             child: Text(
               'El pH mostrado es simulado: el prototipo aún no cuenta con sensor de pH.',
-              style: TextStyle(fontSize: 11.5, color: Color(0xFF0D47A1)),
+              style: TextStyle(fontSize: 11.5, color: Color(0xFF33505E)),
             ),
           ),
         ],

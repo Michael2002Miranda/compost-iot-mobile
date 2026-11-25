@@ -64,30 +64,38 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Center(
                     child: Container(
-                      width: 76,
-                      height: 76,
-                      decoration: const BoxDecoration(color: Tema.verdeClaro, shape: BoxShape.circle),
-                      child: const Icon(Icons.eco, size: 40, color: Tema.verde),
+                      width: 72,
+                      height: 72,
+                      decoration: const BoxDecoration(color: Tema.salvia, shape: BoxShape.circle),
+                      child: const Icon(Icons.eco, size: 36, color: Tema.olivaOscuro),
                     ),
                   ),
                   const SizedBox(height: 18),
-                  const Text(
+                  Text(
                     'Compost IoT',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: Tema.verdeOscuro),
+                    style: Tema.serif(32, color: Tema.olivaOscuro),
                   ),
-                  const SizedBox(height: 6),
-                  const Text(
+                  const SizedBox(height: 8),
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 2,
+                      color: Tema.terracota,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
                     'Monitoreo del compostaje en tiempo real',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13.5, color: Tema.textoSecundario),
+                    style: Tema.sans(13, color: Tema.tintaSuave),
                   ),
-                  const SizedBox(height: 28),
-                  const Text('Bienvenido', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 30),
+                  Text('Bienvenido', style: Tema.serif(22)),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Inicia sesión para ver tu compostera',
-                    style: TextStyle(fontSize: 13, color: Tema.textoSecundario),
+                    style: Tema.sans(13, color: Tema.tintaSuave),
                   ),
                   const SizedBox(height: 18),
                   TextFormField(
@@ -167,17 +175,17 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: _enviando ? null : _abrirRegistro,
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size.fromHeight(48),
-                      foregroundColor: Tema.verde,
-                      side: const BorderSide(color: Tema.verde),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      foregroundColor: Tema.tinta,
+                      side: const BorderSide(color: Tema.borde),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
                     child: const Text('Crear cuenta'),
                   ),
                   const SizedBox(height: 26),
-                  const Text(
-                    'Universidad Privada Antenor Orrego · 2026',
+                  Text(
+                    'Monitoreo de compostaje domiciliario',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 11, color: Tema.textoSecundario),
+                    style: Tema.sans(11, color: Tema.tintaSuave, espaciado: 0.3),
                   ),
                 ],
               ),

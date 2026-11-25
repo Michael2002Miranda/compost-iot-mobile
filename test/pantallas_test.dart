@@ -67,15 +67,15 @@ void main() {
     )));
     await tester.pumpAndSettle();
 
-    expect(find.text('Estado del Compostador'), findsOneWidget);
+    expect(find.text('ESTADO DEL COMPOSTADOR'), findsOneWidget);
     expect(find.text('Compostera del patio'), findsOneWidget);
     expect(find.text('Fase termófila'), findsOneWidget);
     expect(find.text('Temperatura'), findsOneWidget);
     expect(find.text('Humedad'), findsOneWidget);
     expect(find.text('pH'), findsOneWidget);
-    // El valor se dibuja con Text.rich (número + unidad).
+    // El valor se dibuja con Text.rich (número + unidad) o con la tarjeta.
     expect(find.textContaining('52.3', findRichText: true), findsOneWidget);
-    expect(find.text('Día de proceso'), findsOneWidget);
+    expect(find.text('DÍA DE PROCESO'), findsOneWidget);
     expect(find.text('Experimental'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -130,7 +130,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('CMP-1234'), findsOneWidget);
-    expect(find.text('Pasos para conectarlo'), findsOneWidget);
+    expect(find.text('PASOS PARA CONECTARLO'), findsOneWidget);
     expect(find.textContaining('CompostIoT-Setup'), findsWidgets);
     expect(find.text('Copiar código'), findsOneWidget);
     expect(tester.takeException(), isNull);
