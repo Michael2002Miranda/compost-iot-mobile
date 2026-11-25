@@ -102,6 +102,10 @@ class _InvestigadorPageState extends State<InvestigadorPage> {
                         )
                       else
                         ...visibles.map(_tarjeta),
+                      const SizedBox(height: 18),
+                      ..._fichas(),
+                      const SizedBox(height: 18),
+                      ..._evaluaciones(),
                       const SizedBox(height: 12),
                       FilledButton.icon(
                         onPressed: _exportar,
@@ -189,6 +193,186 @@ class _InvestigadorPageState extends State<InvestigadorPage> {
   String _compacto(int valor) {
     if (valor >= 10000) return '${(valor / 1000).toStringAsFixed(1)}k';
     return '$valor';
+  }
+
+  // --- Fichas del estudio ---------------------------------------------------
+  List<Widget> _fichas() {
+    final cfc = widget.estado.fichasCfc;
+    final ppfm = widget.estado.fichasPpfm;
+    final maduros = cfc.where((r) => r.maduro).length;
+    final promedio = ppfm.isEmpty
+        ? null
+        : ppfm.map((r) => r.precision).reduce((a, b) => a + b) / ppfm.length;
+
+    return [
+      const SeccionTitulo(texto: 'Fichas del estudio'),
+      _fichaCard(
+        titulo: 'Calidad física del compost',
+        detalle: '${cfc.length} registros · $maduros marcados como maduros',
+        color: const Color(0xFF33691E),
+        icono: Icons.compost,
+        alExportar: () => _exportarFichas('cfc'),
+        ejemplo: cfc.isEmpty
+            ? null
+            : '${cfc.first.compostera ?? 'Compostera'} · ${fechaCorta(cfc.first.fecha)} · '
+                '${cfc.first.puntaje}/8',
+      ),
+      const SizedBox(height: 8),
+      _fichaCard(
+        titulo: 'Precisión de los parámetros',
+        detalle: ppfm.isEmpty
+            ? 'Sin registros todavía'
+            : '${ppfm.length} registros · promedio ${promedio!.toStringAsFixed(2)} %',
+        color: const Color(0xFF00695C),
+        icono: Icons.my_location,
+        alExportar: () => _exportarFichas('ppfm'),
+        ejemplo: ppfm.isEmpty
+            ? null
+            : '${ppfm.first.compostera ?? 'Compostera'} · ${fechaCorta(ppfm.first.fecha)} · '
+                '${ppfm.first.precision.toStringAsFixed(2)} %',
+      ),
+    ];
+  }
+
+  Widget _fichaCard({
+    required String titulo,
+    required String detalle,
+    required Color color,
+    required IconData icono,
+    required VoidCallback alExportar,
+    String? ejemplo,
+  }) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE6ECE7)),
+      ),
+      child: Row(
+        children: [
+          Icon(icono, size: 20, color: color),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(titulo, style: Tema.sans(13.5, peso: FontWeight.w700)),
+                const SizedBox(height: 2),
+                Text(detalle, style: Tema.sans(11.5, color: Tema.tintaSuave)),
+                if (ejemplo != null) ...[
+                  const SizedBox(height: 2),
+                  Text(ejemplo, style: Tema.sans(10.5, color: color)),
+                ],
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: alExportar,
+            child: const Text('CSV', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Evaluaciones ---------------------------------------------------------
+  List<Widget> _evaluaciones() {
+    final resumen = widget.estado.resumenEvaluaciones ?? const {};
+    final sus = widget.estado.evaluacionesSus;
+    final pruebas = widget.estado.pruebasFuncionalidad;
+    final promedio = (resumen['promedio_sus'] as num?)?.toDouble();
+    final aprobadas = (resumen['aprobadas'] as num?)?.toInt() ?? 0;
+    final total = (resumen['pruebas'] as num?)?.toInt() ?? pruebas.length;
+
+    return [
+      const SeccionTitulo(texto: 'Evaluaciones'),
+      Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE6ECE7)),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: _datoEvaluacion(
+                    'Usabilidad (SUS)',
+                    promedio == null ? '—' : promedio.toStringAsFixed(1),
+                    '${sus.length} evaluaciones',
+                  ),
+                ),
+                Expanded(
+                  child: _datoEvaluacion(
+                    'Funcionalidad',
+                    '$aprobadas / $total',
+                    'casos aprobados',
+                  ),
+                ),
+              ],
+            ),
+            if (pruebas.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              const Divider(height: 1),
+              const SizedBox(height: 8),
+              ...pruebas.take(3).map((p) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          p.aprobado ? Icons.check_circle : Icons.cancel,
+                          size: 14,
+                          color: p.aprobado ? Tema.verde : Tema.ladrillo,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            p.caso,
+                            style: Tema.sans(11.5),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+            ],
+          ],
+        ),
+      ),
+    ];
+  }
+
+  Widget _datoEvaluacion(String titulo, String valor, String detalle) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          titulo.toUpperCase(),
+          style: Tema.sans(9, color: Tema.tintaSuave, peso: FontWeight.w700, espaciado: 0.8),
+        ),
+        const SizedBox(height: 2),
+        Text(valor, style: Tema.serif(24, color: Tema.olivaOscuro)),
+        Text(detalle, style: Tema.sans(10.5, color: Tema.tintaSuave)),
+      ],
+    );
+  }
+
+  Future<void> _exportarFichas(String tipo) async {
+    final mensajero = ScaffoldMessenger.of(context);
+    try {
+      final csv = await widget.estado.descargarFichasCsv(tipo);
+      await Clipboard.setData(ClipboardData(text: csv));
+      final filas = '\n'.allMatches(csv).length;
+      mensajero.showSnackBar(
+        SnackBar(content: Text('CSV de $tipo copiado ($filas filas).')),
+      );
+    } on ApiException catch (error) {
+      mensajero.showSnackBar(SnackBar(content: Text(error.mensaje)));
+    }
   }
 
   Widget _tarjeta(ComposteraEstudio c) {

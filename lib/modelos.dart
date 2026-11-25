@@ -216,6 +216,9 @@ class RegistroPpfm {
     required this.fecha,
     this.idCompostera = 1,
     this.observaciones,
+    this.compostera,
+    this.participante,
+    this.grupo,
   });
 
   final String parametro;
@@ -226,6 +229,11 @@ class RegistroPpfm {
   final int idCompostera;
   final String? observaciones;
 
+  /// Datos de contexto que solo entrega el panel del investigador.
+  final String? compostera;
+  final String? participante;
+  final String? grupo;
+
   factory RegistroPpfm.fromJson(Map<String, dynamic> json) => RegistroPpfm(
         parametro: '${json['parametro'] ?? ''}',
         valorMedido: _numero(json['valor_medido']),
@@ -234,6 +242,9 @@ class RegistroPpfm {
         fecha: _fecha(json['fecha']),
         idCompostera: (json['id_compostera'] as num?)?.toInt() ?? 1,
         observaciones: json['observaciones']?.toString(),
+        compostera: json['compostera']?.toString(),
+        participante: json['participante']?.toString(),
+        grupo: json['grupo']?.toString(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -259,6 +270,9 @@ class RegistroCfc {
     required this.fecha,
     this.idCompostera = 1,
     this.observaciones,
+    this.compostera,
+    this.participante,
+    this.grupo,
   });
 
   final String color;
@@ -271,6 +285,11 @@ class RegistroCfc {
   final int idCompostera;
   final String? observaciones;
 
+  /// Datos de contexto que solo entrega el panel del investigador.
+  final String? compostera;
+  final String? participante;
+  final String? grupo;
+
   factory RegistroCfc.fromJson(Map<String, dynamic> json) => RegistroCfc(
         color: '${json['color'] ?? ''}',
         aroma: '${json['aroma'] ?? ''}',
@@ -281,6 +300,9 @@ class RegistroCfc {
         fecha: _fecha(json['fecha']),
         idCompostera: (json['id_compostera'] as num?)?.toInt() ?? 1,
         observaciones: json['observaciones']?.toString(),
+        compostera: json['compostera']?.toString(),
+        participante: json['participante']?.toString(),
+        grupo: json['grupo']?.toString(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -383,5 +405,55 @@ class ComposteraEstudio {
         lecturas: (json['lecturas'] as num?)?.toInt() ?? 0,
         ultimaLectura: _fechaOpcional(json['ultima_lectura']),
         primeraLectura: _fechaOpcional(json['primera_lectura']),
+      );
+}
+
+/// Evaluación de usabilidad (SUS) registrada por un participante.
+class EvaluacionSus {
+  const EvaluacionSus({
+    required this.puntaje,
+    required this.fecha,
+    this.participante,
+    this.email,
+    this.evaluador,
+  });
+
+  final double puntaje;
+  final DateTime fecha;
+  final String? participante;
+  final String? email;
+  final String? evaluador;
+
+  factory EvaluacionSus.fromJson(Map<String, dynamic> json) => EvaluacionSus(
+        puntaje: _numero(json['puntaje']),
+        fecha: _fecha(json['fecha']),
+        participante: json['participante']?.toString(),
+        email: json['email']?.toString(),
+        evaluador: json['evaluador']?.toString(),
+      );
+}
+
+/// Caso de prueba de funcionalidad registrado por un participante.
+class PruebaFuncionalidad {
+  const PruebaFuncionalidad({
+    required this.caso,
+    required this.aprobado,
+    required this.fecha,
+    this.participante,
+    this.email,
+  });
+
+  final String caso;
+  final bool aprobado;
+  final DateTime fecha;
+  final String? participante;
+  final String? email;
+
+  factory PruebaFuncionalidad.fromJson(Map<String, dynamic> json) => PruebaFuncionalidad(
+        caso: '${json['caso'] ?? ''}',
+        aprobado: json['aprobado'] == true,
+        fecha: _fecha(json['fecha']),
+        participante: json['participante']?.toString(),
+        email: json['email']?.toString(),
       );
 }

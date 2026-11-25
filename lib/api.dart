@@ -314,6 +314,49 @@ class ApiCliente {
 
   Future<Map<String, dynamic>> resumenEstudio() => _enviar('GET', '/api/admin/resumen');
 
+  Future<({List<RegistroPpfm> ppfm, List<RegistroCfc> cfc})> fichasEstudio() async {
+    final cuerpo = await _enviar('GET', '/api/admin/registros');
+    final ppfm = ((cuerpo['ppfm'] as List?) ?? const [])
+        .map((e) => RegistroPpfm.fromJson(e as Map<String, dynamic>))
+        .toList();
+    final cfc = ((cuerpo['cfc'] as List?) ?? const [])
+        .map((e) => RegistroCfc.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return (ppfm: ppfm, cfc: cfc);
+  }
+
+  Future<({List<EvaluacionSus> sus, List<PruebaFuncionalidad> pruebas, Map<String, dynamic> resumen})>
+      evaluacionesEstudio() async {
+    final cuerpo = await _enviar('GET', '/api/admin/evaluaciones');
+    final sus = ((cuerpo['sus'] as List?) ?? const [])
+        .map((e) => EvaluacionSus.fromJson(e as Map<String, dynamic>))
+        .toList();
+    final pruebas = ((cuerpo['pruebas'] as List?) ?? const [])
+        .map((e) => PruebaFuncionalidad.fromJson(e as Map<String, dynamic>))
+        .toList();
+    final resumen = (cuerpo['resumen'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{};
+    return (sus: sus, pruebas: pruebas, resumen: resumen);
+  }
+
+  /// Descarga las fichas del estudio (tipo `ppfm` o `cfc`) en CSV.
+  Future<String> descargarFichasCsv(String tipo) async {
+    try {
+      final respuesta = await http
+          .get(_uri('/api/admin/export-registros.csv', {'tipo': tipo}), headers: _cabeceras)
+          .timeout(const Duration(seconds: 60));
+
+      if (respuesta.statusCode != 200) {
+        throw ApiException('No se pudo descargar el CSV (${respuesta.statusCode})',
+            codigo: respuesta.statusCode);
+      }
+      return utf8.decode(respuesta.bodyBytes);
+    } on TimeoutException {
+      throw ApiException('La descarga tardó demasiado. Intente de nuevo.');
+    } on http.ClientException {
+      throw ApiException('No se pudo conectar con el servidor.');
+    }
+  }
+
   /// Descarga el estudio completo en CSV (la respuesta no es JSON).
   Future<String> descargarEstudioCsv() async {
     try {

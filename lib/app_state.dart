@@ -49,6 +49,12 @@ class AppState extends ChangeNotifier {
   List<ComposteraEstudio> estudio = [];
   Map<String, dynamic>? resumenEstudio;
   bool cargandoEstudio = false;
+
+  List<RegistroPpfm> fichasPpfm = [];
+  List<RegistroCfc> fichasCfc = [];
+  List<EvaluacionSus> evaluacionesSus = [];
+  List<PruebaFuncionalidad> pruebasFuncionalidad = [];
+  Map<String, dynamic>? resumenEvaluaciones;
   int get diasDeProceso {
     // Se cuenta desde la primera lectura; si aún no hay datos, desde el alta.
     final inicio = activa?.primeraLectura ?? activa?.creadaEn;
@@ -286,8 +292,24 @@ class AppState extends ChangeNotifier {
   /// Se llama desde el ciclo de vida: al volver a primer plano se reanuda.
   void reanudar() {
     if (usuario != null) {
+      _refrescarPerfil();
       refrescarPanel();
       _iniciarPolling();
+    }
+  }
+
+  /// Vuelve a leer el perfil: si el rol cambió (por ejemplo, lo promovieron a
+  /// investigador) la app lo refleja sin tener que cerrar sesión.
+  Future<void> _refrescarPerfil() async {
+    try {
+      final perfil = await api.perfil();
+      if (perfil.rol != usuario?.rol || perfil.nombre != usuario?.nombre) {
+        usuario = perfil;
+        await almacen.guardarUsuario(perfil.toJson());
+        _avisar();
+      }
+    } on ApiException {
+      // Sin conexión: se conserva el perfil guardado.
     }
   }
 
@@ -452,6 +474,15 @@ class AppState extends ChangeNotifier {
     try {
       estudio = await api.composterasEstudio();
       resumenEstudio = await api.resumenEstudio();
+
+      final fichas = await api.fichasEstudio();
+      fichasPpfm = fichas.ppfm;
+      fichasCfc = fichas.cfc;
+
+      final evaluaciones = await api.evaluacionesEstudio();
+      evaluacionesSus = evaluaciones.sus;
+      pruebasFuncionalidad = evaluaciones.pruebas;
+      resumenEvaluaciones = evaluaciones.resumen;
     } on ApiException catch (error) {
       errorSesion = error.mensaje;
     } finally {
@@ -472,6 +503,9 @@ class AppState extends ChangeNotifier {
 
   /// Devuelve el CSV completo del estudio o lanza `ApiException`.
   Future<String> descargarCsvEstudio() => api.descargarEstudioCsv();
+
+  /// CSV de las fichas del estudio: `ppfm` o `cfc`.
+  Future<String> descargarFichasCsv(String tipo) => api.descargarFichasCsv(tipo);
 
   Future<void> cargarComparacion() async {    try {
       final resultado = await api.comparacion();
